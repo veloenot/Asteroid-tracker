@@ -22,10 +22,12 @@ namespace d03.Nasa
 			var content = await response.Content.ReadAsStringAsync();
 			var statusCode = response.StatusCode;
 
-			if (statusCode == HttpStatusCode.OK)
-				return JsonSerializer.Deserialize<T>(content);
-			
-			throw new Exception($"GET\n\"{url}\" returned {statusCode}:\n{content}");
+			if (statusCode != HttpStatusCode.OK)
+			{
+				throw new Exception($"GET\n\"{url}\" returned {statusCode}:\n{content}");
+			}
+				
+			return JsonSerializer.Deserialize<T>(content);
 		}
 	}
 }
