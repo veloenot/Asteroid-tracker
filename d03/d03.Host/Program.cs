@@ -28,9 +28,9 @@ namespace d03.Host
 				try
 				{
 					INasaClient<int, Task<MediaOfToday[]>> apod = new ApodClient(api_key);
-					var apodResult = await apod.GetAsync(int.Parse(args[1].Trim()));
+					var result = await apod.GetAsync(int.Parse(args[1].Trim()));
 	
-					Console.WriteLine(string.Join("\n\n", (object[])apodResult));
+					Console.WriteLine(string.Join("\n\n", (object[])result));
 				}
 				catch (Exception e)
 				{
