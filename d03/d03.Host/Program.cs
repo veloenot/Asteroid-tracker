@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration.Json;
 using d03.Nasa;
 using d03.Nasa.Apod;
 using d03.Nasa.Apod.Models;
+using d03.Nasa.NeoWs;
+using d03.Nasa.NeoWs.Models;
 
 namespace d03.Host
 {
@@ -14,6 +16,11 @@ namespace d03.Host
 	{
 		static async Task Main(string[] args)
 		{
+			if (args.Length == 0)
+			{
+				return;
+			}
+			
 			CultureInfo.CurrentCulture = new CultureInfo("en-GB", false);
 
 			var configuration = new ConfigurationBuilder()
@@ -21,16 +28,49 @@ namespace d03.Host
 				.SetBasePath(Directory.GetCurrentDirectory())
 				.Build();
 
-			var api_key = configuration["ApiKey"];
-		
+			var apiKey = configuration["ApiKey"];
+
 			if (args[0].Trim() == "apod")
 			{
+				if (args.Length == 1 || !int.TryParse(args[1].Trim(), out int count))
+				{
+					return;
+				}
+
 				try
 				{
-					INasaClient<int, Task<MediaOfToday[]>> apod = new ApodClient(api_key);
-					var result = await apod.GetAsync(int.Parse(args[1].Trim()));
+					INasaClient<int, Task<MediaOfToday[]>> apod = new ApodClient(apiKey);
+					var result = await apod.GetAsync(count);
 	
 					Console.WriteLine(string.Join("\n\n", (object[])result));
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e.Message);
+				}
+			}
+			else if (args[0].Trim() == "neows")
+			{
+				var startDate = configuration.GetSection("NeoWs")["StartDate"];
+				var endDate = configuration["NeoWs:EndDate"];
+
+				AsteroidRequest request;
+
+				if (args.Length > 1 && int.TryParse(args[1].Trim(), out int requestCount))
+				{
+					request = new AsteroidRequest(startDate, endDate, requestCount);
+				}
+				else
+				{	
+					request = new AsteroidRequest(startDate, endDate);
+				}
+
+				try
+				{
+				INasaClient<AsteroidRequest, Task<AsteroidLookup[]>> neows = new NeoWsClient(apiKey);
+				var result = await neows.GetAsync(request);
+
+				Console.WriteLine(string.Join("\n\n", (object[])result));
 				}
 				catch (Exception e)
 				{
@@ -40,8 +80,3 @@ namespace d03.Host
 		}
 	}
 }
-
-//			var start_date = "2020-07-14";
-//			var end_date = "2020-07-14";
-
-//			var req2 = $"{url}start_date={start_date}&end_date={end_date}&api_key={api_key}";
