@@ -67,10 +67,10 @@ namespace d03.Host
 
 				try
 				{
-				INasaClient<AsteroidRequest, Task<AsteroidLookup[]>> neows = new NeoWsClient(apiKey);
-				var result = await neows.GetAsync(request);
+					INasaClient<AsteroidRequest, Task<AsteroidLookup[]>> neows = new NeoWsClient(apiKey);
+					var result = await neows.GetAsync(request);
 
-				Console.WriteLine(string.Join("\n\n", (object[])result));
+					Console.WriteLine(string.Join("\n\n", (object[])result));
 				}
 				catch (Exception e)
 				{
