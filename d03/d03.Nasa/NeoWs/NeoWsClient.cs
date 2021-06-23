@@ -9,7 +9,7 @@ namespace d03.Nasa.NeoWs
 {
 	public class NeoWsClient : ApiClientBase, INasaClient<AsteroidRequest, Task<AsteroidLookup[]>>
 	{
-		public struct neoFeed
+		struct neoFeed
 		{
 			[JsonPropertyName("near_earth_objects")]
 			public Dictionary<DateTime, AsteroidInfo[]> NearEarthObjects { get; set; }

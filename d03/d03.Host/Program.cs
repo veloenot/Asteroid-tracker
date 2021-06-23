@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
 using System.Globalization;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using d03.Nasa;
@@ -32,7 +32,7 @@ namespace d03.Host
 
 			if (args[0].Trim() == "apod")
 			{
-				if (args.Length == 1 || !int.TryParse(args[1].Trim(), out int count))
+				if (args.Length == 1 || !int.TryParse(args[1].Trim(), out int requestCount))
 				{
 					return;
 				}
@@ -40,7 +40,7 @@ namespace d03.Host
 				try
 				{
 					INasaClient<int, Task<MediaOfToday[]>> apod = new ApodClient(apiKey);
-					var result = await apod.GetAsync(count);
+					var result = await apod.GetAsync(requestCount);
 	
 					Console.WriteLine(string.Join("\n\n", (object[])result));
 				}
