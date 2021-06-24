@@ -54,16 +54,12 @@ namespace d03.Host
 				var startDate = configuration.GetSection("NeoWs")["StartDate"];
 				var endDate = configuration["NeoWs:EndDate"];
 
-				AsteroidRequest request;
-
-				if (args.Length > 1 && int.TryParse(args[1].Trim(), out int requestCount))
+				if (args.Length == 1 || !int.TryParse(args[1].Trim(), out int requestCount))
 				{
-					request = new AsteroidRequest(startDate, endDate, requestCount);
+					requestCount = int.MaxValue;
 				}
-				else
-				{	
-					request = new AsteroidRequest(startDate, endDate);
-				}
+
+				var request = new AsteroidRequest(startDate, endDate, requestCount);
 
 				try
 				{
